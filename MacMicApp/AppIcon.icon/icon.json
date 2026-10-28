@@ -1,0 +1,68 @@
+{
+  "fill-specializations" : [
+    {
+      "value" : {
+        "linear-gradient" : [
+          "srgb:0.02000,0.65000,0.75000,1.00000",
+          "srgb:0.04000,0.19000,0.55000,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "srgb:0.03000,0.23000,0.33000,1.00000",
+          "srgb:0.02000,0.05000,0.14000,1.00000"
+        ]
+      }
+    }
+  ],
+  "groups" : [
+    {
+      "blur-material" : 0.3,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Lens.svg",
+          "name" : "Lens"
+        },
+        {
+          "glass" : true,
+          "image-name" : "Pivot.svg",
+          "name" : "Pivot"
+        },
+        {
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "Stage.svg",
+          "name" : "Stage"
+        },
+        {
+          "glass" : true,
+          "image-name" : "Body.svg",
+          "name" : "Body"
+        },
+        {
+          "glass" : true,
+          "image-name" : "Stand.svg",
+          "name" : "Stand"
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Stage",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.3
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.15
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

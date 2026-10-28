@@ -1,0 +1,15 @@
+# Local notes, captures, builds, and caches
+/.local/
+
+# OS and editor metadata
+.DS_Store
+*.xcuserstate
+xcuserdata/
+__pycache__/
+
+# Credentials must never be committed
+.env
+.env.*
+*.p12
+*.pfx
+*.key

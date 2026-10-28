@@ -1,0 +1,19 @@
+name: Build Icon
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compile:
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile native Liquid Glass icon
+        run: bash compile-icon.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MacMicApp-NativeIcon
+          path: output/
+          if-no-files-found: error
+          retention-days: 7
