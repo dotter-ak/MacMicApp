@@ -15,7 +15,10 @@ fi
 # Select a persistent identity explicitly when available. Never silently fall
 # back to ad-hoc signing if the requested identity fails.
 signing_identity="${MACMIC_SIGN_IDENTITY:--}"
-project_root="$(cd "$(dirname "$0")/.." && pwd)"
+project_root="$(cd "$(dirname "$0")/.." && pwd -P)"
+if [[ "${MACMIC_BUILD_ROOT:-}" != "$project_root" || -z "${MACMIC_BUILD_NUMBER:-}" ]]; then
+    exec python3 "$project_root/scripts/lib/build-number.py" "$project_root" bash "$project_root/scripts/build-local.sh" "$configuration"
+fi
 config_file="$project_root/Config/App.xcconfig"
 config_value() {
     awk -F ' = ' -v key="$1" '$1 == key { print $2; exit }' "$config_file"
@@ -70,7 +73,7 @@ plist="$app_path/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleName $product_name" "$plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $bundle_id" "$plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(config_value MARKETING_VERSION)" "$plist"
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(config_value CURRENT_PROJECT_VERSION)" "$plist"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $MACMIC_BUILD_NUMBER" "$plist"
 /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $deployment_target" "$plist"
 
 icon_resources="$project_root/Resources/CompiledIcon"

@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsSidebar: View {
     let capture: CaptureController
     let cameras: CameraStore
+    let sleepPrevention: SleepPrevention
     @ViewState private var imageExpanded = true
     @ViewState private var otherExpanded = true
 
@@ -23,6 +24,23 @@ struct SettingsSidebar: View {
                     ImageSettingsView(capture: capture)
                 }
                 SettingsSection("Other", isExpanded: $otherExpanded) {
+                    HStack {
+                        Text("Prevent Screen Saver & Sleep").font(.body)
+                        Spacer()
+                        Toggle("Prevent Screen Saver & Sleep", isOn: Binding(
+                            get: { sleepPrevention.isEnabled },
+                            set: { sleepPrevention.setEnabled($0) }
+                        ))
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityLabel("Prevent Screen Saver & Sleep")
+                        .accessibilityIdentifier("preventSleepToggle")
+                    }
+                    .padding(.vertical, 4)
+                    .help("Keep the display and Mac awake while this window is open. Manual sleep is still available.")
+                    if let message = sleepPrevention.errorMessage {
+                        Text(message).font(.caption).foregroundStyle(.red)
+                    }
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("Capture Folder")

@@ -19,6 +19,7 @@ This project was developed for personal use with the help of **ChatGPT Codex**. 
 - Configurable capture folder, defaulting to `~/Downloads/MacMicApp Captures`, with a button to open it in Finder. Existing captures are not overwritten.
 - Native sidebar with collapsible **Device**, **Image**, and **Other** sections, plus Liquid Glass controls and indicators over the video.
 - Saved camera selection, confirmed video mode, window size, and window position. Native macOS full-screen support.
+- **Prevent Screen Saver & Sleep** in **Other**, off by default and remembered between launches. Keeps the display and Mac awake while the window is open, including in the background or minimized; closing the window releases it. Manual sleep and display sleep remain available.
 - Recovery handling for USB disconnection, sleep, and stream interruptions.
 
 ## Installation
@@ -53,6 +54,10 @@ For development:
 ```
 
 Both scripts default to **Debug** when no configuration is specified. Debug and Release share the same app identifier and user settings; do not run them simultaneously with the same camera.
+
+The build scripts automatically increment `CURRENT_PROJECT_VERSION` in `Config/App.xcconfig` for each build. Local Debug, Release, and `build-native.sh` share the counter; `package-release.sh` increments it once for its build-and-package operation. Concurrent builds in the same checkout run sequentially so the number stays consistent through packaging. Failed builds may leave gaps in the sequence.
+
+Commit the updated configuration with the source changes; `MARKETING_VERSION` remains manually managed. Use these scripts for automatic numbering; building directly from the Xcode UI uses the current configured number.
 
 Build settings are in `Config/App.xcconfig`. The local build installs the validated, precompiled native icon resources from `Resources/CompiledIcon`. Changes to the `.icon` source require recompiling those resources. The existing app is replaced only after compilation, resource installation, and signature verification succeed.
 

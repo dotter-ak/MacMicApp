@@ -5,11 +5,15 @@ struct MacMicApp: App {
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var applicationDelegate
     @FocusedValue(\.cameraRefresh) private var refreshAction
     @ViewState private var capture = CaptureController(preferences: .shared)
+    @ViewState private var sleepPrevention = SleepPrevention()
 
     var body: some Scene {
         Window("MacMicApp", id: "main") {
-            ContentView(capture: capture, preferences: .shared)
-                .onAppear { applicationDelegate.capture = capture }
+            ContentView(capture: capture, preferences: .shared, sleepPrevention: sleepPrevention)
+                .onAppear {
+                    applicationDelegate.capture = capture
+                    applicationDelegate.sleepPrevention = sleepPrevention
+                }
         }
         .commands {
             SidebarCommands()

@@ -6,14 +6,16 @@ typealias ViewState<Value> = SwiftUI.State<Value>
 
 struct ContentView: View {
     let capture: CaptureController
+    let sleepPrevention: SleepPrevention
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ViewState private var cameras: CameraStore
     @ViewState private var settingsOpenFailed = false
     @ViewState private var sidebarVisibility: NavigationSplitViewVisibility = .all
 
-    init(capture: CaptureController, preferences: CapturePreferences) {
+    init(capture: CaptureController, preferences: CapturePreferences, sleepPrevention: SleepPrevention) {
         self.capture = capture
+        self.sleepPrevention = sleepPrevention
         _cameras = ViewState(initialValue: CameraStore(preferences: preferences))
     }
 
@@ -34,7 +36,7 @@ struct ContentView: View {
                     .padding(.trailing, 12)
                 }
                 .frame(height: 52)
-                SettingsSidebar(capture: capture, cameras: cameras)
+                SettingsSidebar(capture: capture, cameras: cameras, sleepPrevention: sleepPrevention)
             }
                 // Use the system sidebar surface, without a second glass panel.
                 .navigationSplitViewColumnWidth(min: 280, ideal: 320, max: 420)
@@ -106,7 +108,9 @@ struct ContentView: View {
             Button("OK") { capture.dismissFolderError() }
         } message: { Text(capture.captureFolderError ?? "") }
         .frame(minWidth: 680, minHeight: 480)
+        .background(WindowStateReader())
         .onAppear {
+            sleepPrevention.setWindowOpen(true)
             #if DEBUG
             if HardwareProbe.measuresUIModes {
                 sidebarVisibility = CommandLine.arguments.contains("--probe-inspector") ? .all : .detailOnly
@@ -133,6 +137,7 @@ struct ContentView: View {
     }
 
     private func closeWindowSession() {
+        sleepPrevention.setWindowOpen(false)
         cameras.stopMonitoring()
         capture.close()
     }

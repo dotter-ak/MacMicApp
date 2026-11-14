@@ -237,13 +237,6 @@ final class PreviewView: NSView {
         removeCloseObserver()
         removeKeyMonitor()
         if let window {
-            // AppKit persists the normal window frame across moves, resizes,
-            // close/reopen and relaunch, including its display coordinates.
-            let frameName = "MacMicApp.MainWindow"
-            if window.frameAutosaveName != frameName {
-                window.setFrameUsingName(frameName)
-                window.setFrameAutosaveName(frameName)
-            }
             closeObserver = NotificationCenter.default.addObserver(
                 forName: NSWindow.willCloseNotification, object: window, queue: .main
             ) { [weak self] _ in

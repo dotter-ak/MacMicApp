@@ -3,6 +3,7 @@ import AppKit
 @MainActor
 final class ApplicationDelegate: NSObject, NSApplicationDelegate {
     var capture: CaptureController?
+    var sleepPrevention: SleepPrevention?
     private var powerObservers: [NSObjectProtocol] = []
     private var terminationPending = false
 
@@ -24,6 +25,7 @@ final class ApplicationDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        sleepPrevention?.setWindowOpen(false)
         guard let capture else { return .terminateNow }
         guard !terminationPending else { return .terminateLater }
         terminationPending = true

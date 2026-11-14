@@ -5,12 +5,16 @@ if [[ $# -gt 1 || ( "$configuration" != Debug && "$configuration" != Release ) ]
     printf 'Usage: %s [Debug|Release]\n' "$0" >&2
     exit 2
 fi
-project_root="$(cd "$(dirname "$0")/.." && pwd)"
+project_root="$(cd "$(dirname "$0")/.." && pwd -P)"
 if ! xcrun --find actool >/dev/null 2>&1; then
     printf 'Native Liquid Glass icons require full Xcode. Select Xcode with xcode-select or DEVELOPER_DIR, then rerun this script.\n' >&2
     exit 2
 fi
+if [[ "${MACMIC_BUILD_ROOT:-}" != "$project_root" || -z "${MACMIC_BUILD_NUMBER:-}" ]]; then
+    exec python3 "$project_root/scripts/lib/build-number.py" "$project_root" bash "$project_root/scripts/build-native.sh" "$configuration"
+fi
 xcodebuild -project "$project_root/MacMicApp.xcodeproj" -scheme MacMicApp \
     -configuration "$configuration" -derivedDataPath "$project_root/.local/build/Native" \
-    -destination 'platform=macOS,arch=arm64' "CODE_SIGN_IDENTITY=${MACMIC_SIGN_IDENTITY:--}" build
+    -destination 'platform=macOS,arch=arm64' "CODE_SIGN_IDENTITY=${MACMIC_SIGN_IDENTITY:--}" \
+    "CURRENT_PROJECT_VERSION=$MACMIC_BUILD_NUMBER" build
 printf 'Built with native icon: %s/.local/build/Native/Build/Products/%s/MacMicApp.app\n' "$project_root" "$configuration"
